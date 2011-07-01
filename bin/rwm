@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+require 'rwm/x11'
+include X11::Events
+
+dpy = X11::Display.new(ENV['DISPLAY'])
+root = dpy.default_screen.root_window
+
+p X11::Mask
+root.grab_key("F1", X11::Mask[:Mod1])
+root.grab_button(1, X11::Mask[:Mod1])
+root.grab_button(3, X11::Mask[:Mod1])
+
+start, attr = []
+
+dpy.each_event {|ev|
+  case ev
+  when KeyPress
+    ev.subwindow.raise unless ev.subwindow.nil?
+  when ButtonPress
+    unless ev.subwindow.nil?
+      ev.subwindow.grab_pointer(true, X11::Mask[:PointerMotion] | X11::Mask[:ButtonRelease])
+      attr = ev.subwindow.attributes
+      start = ev
+    end
+  when MotionNotify
+    nil while (dpy.check_typed_event(MotionNotify).tap {|x| ev = x if x })
+
+    xdiff = ev.x_root - start.x_root
+    ydiff = ev.y_root - start.y_root
+    ev.window.move_resize(attr.x + (start.button == 1 ? xdiff : 0),
+                                attr.y + (start.button == 1 ? ydiff : 0),
+                                [1, attr.width + (start.button == 3 ? xdiff : 0)].max,
+                                [1, attr.height + (start.button == 3 ? ydiff : 0)].max)
+  when ButtonRelease
+    dpy.ungrab_pointer
+  end
+}
