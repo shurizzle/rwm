@@ -6,7 +6,6 @@ include X11::Events
 dpy = X11::Display.new(ENV['DISPLAY'])
 root = dpy.default_screen.root_window
 
-p X11::Mask
 root.grab_key("F1", X11::Mask[:Mod1])
 root.grab_button(1, X11::Mask[:Mod1])
 root.grab_button(3, X11::Mask[:Mod1])
