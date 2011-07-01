@@ -59,3 +59,23 @@ class Fixnum
     @kc = true
   end
 end
+
+module X11
+  ComboMod = Hash.new {|*|
+    raise ArgumentError, "Modifier doesn't exist"
+  }.merge!({
+    'W' => Mask[:Mod4],
+    'S' => Mask[:Shift],
+    'A' => Mask[:Mod1],
+    'C' => Mask[:Control]
+  }).freeze
+
+  def self.combo (str)
+    *mods, key = str.split('-')
+    mods = mods.map {|mod|
+      ComboMod[mod]
+    }.inject(:|)
+
+    [mods, key]
+  end
+end
