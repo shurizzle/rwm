@@ -56,9 +56,9 @@ module X11
         :proto_major_version, :int,
         :proto_minor_version, :int,
         :vendor, :string,
-        :private3, XID,
-        :private4, XID,
-        :private5, XID,
+        :private3, :XID,
+        :private4, :XID,
+        :private5, :XID,
         :private6, :int,
         :resource_alloc, :pointer,
         :byte_order, :int,
@@ -98,7 +98,7 @@ module X11
     class GC < FFI::Struct
       layout \
         :ext_data, :pointer,
-        :gid, GContext
+        :gid, :GContext
     end
 
     class Screen < FFI::Struct
@@ -141,7 +141,7 @@ module X11
         :backing_planes, :ulong,
         :backing_pixel, :ulong,
         :save_under, :Bool,
-        :colormap, Colormap,
+        :colormap, :Colormap,
         :map_installed, :Bool,
         :map_state, :int,
         :all_event_masks, :long,
@@ -250,7 +250,7 @@ module X11
         :state, :uint
     end
 
-    class XFocusChangeEvent < FFI::Union
+    class XFocusChangeEvent < FFI::Struct
       layout \
         :type, :int,
         :serial, :ulong,
