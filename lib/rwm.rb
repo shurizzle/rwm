@@ -17,25 +17,3 @@
 # along with rwm. If not, see <http://www.gnu.org/licenses/>.
 #++
 
-require 'rwm/client'
-
-module Arbi
-  class << self
-    def connect(address = '127.0.0.1', port = 6969)
-      @@connection = Arbi::Client.new(address, port)
-    end
-
-    def connected?
-      @@connection ? true : false
-    end
-
-    def connection
-      @@connection.sock
-    end
-
-    def get(what)
-      self.connect unless self.connected?
-      @@connection.get(what)
-    end
-  end
-end
