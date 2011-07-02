@@ -21,6 +21,7 @@
 module X11
   module C
     attach_function :XOpenDisplay, [:string], :pointer
+    attach_function :XCloseDisplay, [:pointer], :int
 
     attach_function :XGrabButton, [:pointer, :uint, :uint, :Window, :Bool, :uint, :int, :int, :Window, :Cursor], :int
     attach_function :XGrabKey, [:pointer, :int, :uint, :Window, :Bool, :int, :int], :int

@@ -67,6 +67,10 @@ module X11
       }
     end
 
+    def close
+      C.XCloseDisplay(to_c)
+    end
+
     def to_c
       @dpy.pointer
     end

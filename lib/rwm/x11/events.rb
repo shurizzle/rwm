@@ -20,8 +20,12 @@
 module X11
   module Events
     class Helper
-      def self.attribute (which)
-        @__attribute__ = which.to_s.to_sym
+      def self.attribute (which=nil)
+        if which
+          @__attribute__ = which.to_s.to_sym
+        else
+          @__attribute__ ||= nil
+        end
       end
 
       def self.attach_method (meth, &block)
@@ -94,6 +98,10 @@ module X11
           manage [:send_event, :send_event?]
           manage :display, Display
           manage :window, Window
+
+          def self.inherited (klass)
+            klass.attribute self.attribute
+          end
         }
       end
     end
@@ -467,6 +475,16 @@ module X11
     def self.new (event)
       event = event.typecast(C::XEvent) unless event.is_a?(C::XEvent)
       (TYPE2EVENT[event[:type]] || Any).new(event)
+    end
+  end
+
+  module C
+    class XEvent
+      X11::Event::TYPE2EVENT.compact.each {|type|
+        define_method(type.attribute) {
+          type.new(self)
+        }
+      }
     end
   end
 end
